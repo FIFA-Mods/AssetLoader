@@ -1,0 +1,133 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" ToolsVersion="14.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup Label="ProjectConfigurations">
+    <ProjectConfiguration Include="Release|Win32">
+      <Configuration>Release</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+  </ItemGroup>
+  <PropertyGroup Label="Globals">
+    <ProjectGuid>{8DACB981-88BD-4459-992E-7576F5ABCD59}</ProjectGuid>
+    <RootNamespace>AssetLoader</RootNamespace>
+    <WindowsTargetPlatformVersion>7.0</WindowsTargetPlatformVersion>
+    <ProjectName>AssetLoader</ProjectName>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="Configuration">
+    <ConfigurationType>DynamicLibrary</ConfigurationType>
+    <UseDebugLibraries>false</UseDebugLibraries>
+    <PlatformToolset>v141_xp</PlatformToolset>
+    <WholeProgramOptimization>true</WholeProgramOptimization>
+    <CharacterSet>MultiByte</CharacterSet>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
+  <ImportGroup Label="ExtensionSettings">
+  </ImportGroup>
+  <ImportGroup Label="Shared">
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <PropertyGroup Label="UserMacros" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <TargetExt>.asi</TargetExt>
+    <OutDir>D:\Games\FIFA 07\plugins\</OutDir>
+  </PropertyGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <ClCompile>
+      <WarningLevel>Level3</WarningLevel>
+      <Optimization>Disabled</Optimization>
+      <FunctionLevelLinking>true</FunctionLevelLinking>
+      <IntrinsicFunctions>true</IntrinsicFunctions>
+      <SDLCheck>true</SDLCheck>
+      <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
+      <AdditionalIncludeDirectories>D:\Projects\fifaapi\;D:\Projects\fifam\fmapi;D:\Projects\fifam\generic;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalOptions>/Zc:threadSafeInit- %(AdditionalOptions)</AdditionalOptions>
+      <LanguageStandard>stdcpplatest</LanguageStandard>
+      <PreprocessorDefinitions>_CRT_SECURE_NO_WARNINGS;_CRT_NON_CONFORMING_SWPRINTFS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+    </ClCompile>
+    <Link>
+      <EnableCOMDATFolding>true</EnableCOMDATFolding>
+      <OptimizeReferences>true</OptimizeReferences>
+      <GenerateDebugInformation>No</GenerateDebugInformation>
+      <LinkTimeCodeGeneration>UseLinkTimeCodeGeneration</LinkTimeCodeGeneration>
+      <SubSystem>Windows</SubSystem>
+    </Link>
+    <PostBuildEvent />
+    <PostBuildEvent>
+      <Command>if exist "D:\Games\FIFA 10\" (
+    xcopy "$(TargetPath)" "D:\Games\FIFA 10\plugins\" /Y /I
+)
+if exist "D:\Games\FIFA 09\" (
+    xcopy "$(TargetPath)" "D:\Games\FIFA 09\plugins\" /Y /I
+)
+if exist "D:\Games\FIFA 08\" (
+    xcopy "$(TargetPath)" "D:\Games\FIFA 08\plugins\" /Y /I
+)
+if exist "D:\Games\FIFA 06\" (
+    xcopy "$(TargetPath)" "D:\Games\FIFA 06\plugins\" /Y /I
+)
+if exist "D:\Games\FIFA 2005\" (
+    xcopy "$(TargetPath)" "D:\Games\FIFA 2005\plugins\" /Y /I
+)
+if exist "D:\Games\FIFA 2004\" (
+    xcopy "$(TargetPath)" "D:\Games\FIFA 2004\plugins\" /Y /I
+)
+if exist "D:\Games\FIFA 2003\" (
+    xcopy "$(TargetPath)" "D:\Games\FIFA 2003\plugins\" /Y /I
+)
+if exist "D:\Games\WC 2006\" (
+    xcopy "$(TargetPath)" "D:\Games\WC 2006\plugins\" /Y /I
+)
+if exist "D:\Games\EURO 2008\" (
+    xcopy "$(TargetPath)" "D:\Games\EURO 2008\plugins\" /Y /I
+)
+if exist "D:\Games\EURO 2004\" (
+    xcopy "$(TargetPath)" "D:\Games\EURO 2004\plugins\" /Y /I
+)
+if exist "D:\Games\UEFA Champions League 2004-2005\" (
+    xcopy "$(TargetPath)" "D:\Games\UEFA Champions League 2004-2005\plugins\" /Y /I
+)
+if exist "D:\Games\Champions League 2004-2005\" (
+    xcopy "$(TargetPath)" "D:\Games\Champions League 2004-2005\plugins\" /Y /I
+)
+if exist "D:\Games\CL 2004-2005\" (
+    xcopy "$(TargetPath)" "D:\Games\CL 2004-2005\plugins\" /Y /I
+)
+if exist "D:\Games\Champions League 2006-2007\" (
+    xcopy "$(TargetPath)" "D:\Games\Champions League 2006-2007\plugins\" /Y /I
+)
+if exist "D:\Games\CL 2006-2007\" (
+    xcopy "$(TargetPath)" "D:\Games\CL 2006-2007\plugins\" /Y /I
+)</Command>
+    </PostBuildEvent>
+  </ItemDefinitionGroup>
+  <ItemGroup>
+    <ClCompile Include="GameFIFA07.cpp" />
+    <ClCompile Include="GameFIFA08_10.cpp" />
+    <ClCompile Include="GameFIFA08_12.cpp" />
+    <ClCompile Include="GameFIFA10.cpp" />
+    <ClCompile Include="Game_CL0405.cpp" />
+    <ClCompile Include="GameFIFA05.cpp" />
+    <ClCompile Include="Game_FM07.cpp" />
+    <ClCompile Include="Game_FM08.cpp" />
+    <ClCompile Include="Game_TCM2004.cpp" />
+    <ClCompile Include="Game_TCM2005_11.cpp" />
+    <ClCompile Include="Game_WC06.cpp" />
+    <ClCompile Include="GfxCoreHook.cpp" />
+    <ClCompile Include="Main.cpp" />
+    <ClCompile Include="MyFilesystem.cpp" />
+    <ClCompile Include="MyLog.cpp" />
+    <ClCompile Include="MySettings.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="GfxCoreHook.h" />
+    <ClInclude Include="CustomCallbacks.h" />
+    <ClInclude Include="MyFilesystem.h" />
+    <ClInclude Include="MyLog.h" />
+    <ClInclude Include="MySettings.h" />
+  </ItemGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
+  <ImportGroup Label="ExtensionTargets">
+  </ImportGroup>
+</Project>
