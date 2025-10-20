@@ -2,6 +2,7 @@
 #include "MyFilesystem.h"
 #include "CustomCallbacks.h"
 #include "MySettings.h"
+#include "MyLog.h"
 
 using namespace plugin;
 using namespace std;
@@ -237,6 +238,7 @@ namespace fifa08 {
                     PLAYER_HEADLOD2_ID[playerIndex] = playerid;
                 else if (hairtypeid >= 0)
                     PLAYER_HEADLOD2_ID[playerIndex] = -hairtypeid;
+                Log(Format("Player %s id %d hair %d headlod %d\n", raw_ptr<char>(desc, 0xFB0), playerid, hairtypeid, PLAYER_HEADLOD1_ID[playerIndex]));
             }
         }
     }
@@ -278,7 +280,7 @@ namespace fifa08 {
     }
 }
 
-void Install_FIFA08_12() {
+void Install_FIFA08() {
     using namespace fifa08;
     patch::SetUInt(0x5C5EEF + 1, settings().FAT_MAX_ENTRIES); // fat fix (50000 entries) // done
     patch::RedirectCall(0x5F2B1D, OnTextureCopyData); // done
@@ -376,14 +378,28 @@ void Install_FIFA08_12() {
     patch::RedirectJump(0x5F28E9, OnCompareTexTag2); // done
 
     patch::SetUInt(0x778B85 + 1, 32); // done
-    patch::SetUChar(0x1434EE2 + 1, 64); // done
-    patch::SetUInt(0x1434EE4 + 1, 256); // done
+    if (GameVersion().id() == ID_FIFA08_1200_VTY) {
+        patch::SetUChar(0x1434EE2 + 1, 64); // done
+        patch::SetUInt(0x1434EE4 + 1, 256); // done
+    }
+    else {
+        patch::SetUChar(0x1AF40C1 + 1, 64); // done 2
+        patch::SetUInt(0x1AF40C3 + 1, 256); // done 2
+    }
     patch::SetUChar(0x1677E40 + 1, 50); // done
 
-    patch::RedirectJump(0x1434FB3, Fifa08NumberCB1<128>); // done
-    patch::SetPointer(0x14350E5 + 1, Fifa08NumberCB1<64>); // done
-    patch::SetPointer(0x143500D + 1, Fifa08NumberCB2<128>); // done
-    patch::RedirectJump(0x1435172, Fifa08NumberCB2<64>); // done
+    if (GameVersion().id() == ID_FIFA08_1200_VTY) {
+        patch::RedirectJump(0x1434FB3, Fifa08NumberCB1<128>); // done
+        patch::SetPointer(0x14350E5 + 1, Fifa08NumberCB1<64>); // done
+        patch::SetPointer(0x143500D + 1, Fifa08NumberCB2<128>); // done
+        patch::RedirectJump(0x1435172, Fifa08NumberCB2<64>); // done
+    }
+    else {
+        patch::RedirectJump(0x1AF4192, Fifa08NumberCB1<128>); // done
+        patch::SetPointer(0x1AF42C4 + 1, Fifa08NumberCB1<64>); // done
+        patch::SetPointer(0x1AF41EC + 1, Fifa08NumberCB2<128>); // done
+        patch::RedirectJump(0x1AF4351, Fifa08NumberCB2<64>); // done
+    }
     patch::SetUInt(0x5B3E35 + 1, 32 * 2); // done
     patch::SetUInt(0x5B3E4A + 1, 64 * 2); // done
     patch::SetUInt(0x5B3E9F + 4, 16 * 2); // done

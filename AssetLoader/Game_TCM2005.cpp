@@ -8,7 +8,7 @@ using namespace plugin;
 using namespace std;
 using namespace MyFilesystem;
 
-namespace tcm2005_11 {
+namespace tcm2005 {
     bool useCustomHeadlods = false;
     const unsigned int NUM_PLAYERS = 25; // 11 * 2 players + 1 referee + 2 linesmen
     struct ResFormatArg { int *a; int b; };
@@ -187,8 +187,8 @@ namespace tcm2005_11 {
     }
 }
 
-void InstallGfx_TCM2005_11() {
-    using namespace tcm2005_11;
+void InstallGfx_TCM2005() {
+    using namespace tcm2005;
     patch::SetUInt(GfxCoreAddress(0x3A199A) + 1, settings().FAT_MAX_ENTRIES); // fat fix (50000 entries) // done
     patch::RedirectCall(GfxCoreAddress(0x3C662D), OnTextureCopyData); // done
     patch::SetUShort(GfxCoreAddress(0x3C6628), 0xC68B); // mov eax, [esi] => mov eax, esi // done

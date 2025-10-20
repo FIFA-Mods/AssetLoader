@@ -39,12 +39,12 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="GfxCoreHook.h" />
-    <ClInclude Include="CustomCallbacks.h">
-      <Filter>CustomCallbacks</Filter>
-    </ClInclude>
     <ClInclude Include="MyFilesystem.h" />
     <ClInclude Include="MySettings.h" />
     <ClInclude Include="MyLog.h" />
+    <ClInclude Include="CustomCallbacks.h">
+      <Filter>CustomCallbacks</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="CustomCallbacks">

@@ -44,6 +44,11 @@ void *OnCreateFileIO_FM07_2() {
     return CallAndReturnDynGlobal<void *>(GfxCoreAddress(0x1FF580));
 }
 
+FIFA::Version &GameVersion() {
+    static FIFA::Version version;
+    return version;
+}
+
 class AssetLoader {
 public:
     struct PatchInfo { unsigned int id, editor, gfxHook, gfxFileIo1, gfxFileIo2, strlwrFunc, a1, a2, a3, a4, a5; void(*gameCallback)(); void(*gfxCallback)(); };
@@ -188,25 +193,28 @@ public:
     }
 
     static void Initialize() {
+        if (!CheckPluginName(Magic<'A','s','s','e','t','L','o','a','d','e','r','.','a','s','i'>()))
+            return;
         static PatchInfo info[] = {
             { ID_CL_04_05_1000_C, 0, 0, 0, 0, 0x72C3FF, 0x5E7BFE, 0, 0, 0x5E8FEE, 0x5E921D, Install_CL0405, nullptr },
             { ID_FIFA_05_1000_C, 0, 0, 0, 0, 0x6E2829, 0, 0x5BEA1E, 0, 0x5BFBAE, 0x5BFDDD, Install_FIFA05, nullptr },
-            { ID_FIFA_07_1100_C, 0, 0, 0, 0, 0x8200ED, 0x5AF89E, 0x5AF91E, 0, 0x5B0ABE, 0x5B0CED, Install_FIFA07, nullptr },
+            { ID_FIFA07_1100_RLD, 0, 0, 0, 0, 0x8200ED, 0x5AF89E, 0x5AF91E, 0, 0x5B0ABE, 0x5B0CED, Install_FIFA07, nullptr },
             { ID_WC_06_1000_C, 0, 0, 0, 0, 0x77EBA2, 0x53CD4E, 0, 0, 0x53DF1E, 0x53E14D, Install_WC06, nullptr },
-            { ID_FIFA_08_1000_C, 0, 0, 0, 0, 0x86F35D, 0x5C3E4E, 0x5C3ECE, 0, 0x5C503E, 0x5C527E, Install_FIFA08_10, nullptr },
-            { ID_FIFA_08_1200_C, 0, 0, 0, 0, 0x86F35D, 0x5C3E4E, 0x5C3ECE, 0, 0x5C503E, 0x5C527E, Install_FIFA08_12, nullptr },
+            { ID_FIFA08_1200_VTY, 0, 0, 0, 0, 0x86F35D, 0x5C3E4E, 0x5C3ECE, 0, 0x5C503E, 0x5C527E, Install_FIFA08, nullptr },
+            { ID_FIFA08_1200_BFF, 0, 0, 0, 0, 0x86F35D, 0x5C3E4E, 0x5C3ECE, 0, 0x5C503E, 0x5C527E, Install_FIFA08, nullptr },
             { ID_FIFA10_1000_RZR, 0, 0, 0, 0, 0x8E757B, 0x60D3FE, 0x60D47E, 0, 0x60E5CE, 0x60E80E, Install_FIFA10, nullptr },
             { ID_EURO_08_1000_C, 0, 0, 0, 0, 0x80547D, 0x16C85DB, 0x506A30, 0, 0x55AF1E, 0x55B15E, nullptr, nullptr },
             { ID_FM_07_1000_C, 0, 0x4423D6, 0, 0, 0x394F5E, 0x3492DD, 0, 0, 0x34A7E5, 0x34AA13, nullptr, InstallGfx_FM07 },
             { ID_ED_07_7020, 1, 0x48DA50, 0x704FD, 0x85040, 0, 0, 0, 0, 0, 0, nullptr, nullptr },
-            { ID_FM_05_1010_C, 0, 0x43B2F6, 0x49961C, 0x3A24F0, 0x3E6E05, 0x39F8AE, 0, 0, 0x3A039E, 0x3A05CD, nullptr, InstallGfx_TCM2005_11 },
+            { ID_FM_05_1010_C, 0, 0x43B2F6, 0x49961C, 0x3A24F0, 0x3E6E05, 0x39F8AE, 0, 0, 0x3A039E, 0x3A05CD, nullptr, InstallGfx_TCM2005 },
             { ID_ED_05_4000, 1, 0x4AE2D5, 0x109A52, 0x140CA0, 0, 0, 0, 0, 0, 0, nullptr, nullptr },
             { ID_FM_04_1000_C, 0, 0x41860D, 0x431068, 0x357460, 0x389C20, 0x35207E, 0x35232E, 0x353213, 0, 0, nullptr, InstallGfx_TCM2004 },
             { ID_ED_04_1020, 1, 0x4772A5, 0x14FD, 0x62600, 0, 0, 0, 0, 0, 0, nullptr, nullptr },
             { ID_ED_04_1016, 1, 0x4772A5, 0x14FD, 0x62600, 0, 0, 0, 0, 0, 0, nullptr, nullptr }
         };
         auto v = FIFA::GetAppVersion();
-        if (v.id() == ID_FIFA_07_1100_C) {
+        GameVersion() = v;
+        if (v.id() == ID_FIFA07_1100_RLD) {
             if (MyFilesystem::exists(FIFA::GameDirPath(L"plugins\\FIFA10KitModel.asi"))) {
                 ::Error("FIFA10KitModel.asi plugin is not needed if you're using AssetLoader plugin. "
                         "Please delete FIFA10KitModel.asi file to avoid conflicts with AssetLoader plugin.");

@@ -120,8 +120,8 @@ if exist "D:\Games\CL 2006-2007\" (
     <ClCompile Include="MySettings.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="GfxCoreHook.h" />
     <ClInclude Include="CustomCallbacks.h" />
+    <ClInclude Include="GfxCoreHook.h" />
     <ClInclude Include="MyFilesystem.h" />
     <ClInclude Include="MyLog.h" />
     <ClInclude Include="MySettings.h" />
