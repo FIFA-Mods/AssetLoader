@@ -9,19 +9,16 @@
     <ClCompile Include="Game_CL0405.cpp">
       <Filter>CustomCallbacks</Filter>
     </ClCompile>
-    <ClCompile Include="GameFIFA08_12.cpp">
+    <ClCompile Include="GameFIFA08.cpp">
       <Filter>CustomCallbacks</Filter>
     </ClCompile>
     <ClCompile Include="GameFIFA10.cpp">
       <Filter>CustomCallbacks</Filter>
     </ClCompile>
-    <ClCompile Include="GameFIFA08_10.cpp">
-      <Filter>CustomCallbacks</Filter>
-    </ClCompile>
     <ClCompile Include="GameFIFA05.cpp">
       <Filter>CustomCallbacks</Filter>
     </ClCompile>
-    <ClCompile Include="Game_TCM2005_11.cpp">
+    <ClCompile Include="Game_TCM2005.cpp">
       <Filter>CustomCallbacks</Filter>
     </ClCompile>
     <ClCompile Include="Game_TCM2004.cpp">

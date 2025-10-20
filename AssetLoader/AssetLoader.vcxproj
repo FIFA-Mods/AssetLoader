@@ -104,15 +104,14 @@ if exist "D:\Games\CL 2006-2007\" (
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="GameFIFA07.cpp" />
-    <ClCompile Include="GameFIFA08_10.cpp" />
-    <ClCompile Include="GameFIFA08_12.cpp" />
+    <ClCompile Include="GameFIFA08.cpp" />
     <ClCompile Include="GameFIFA10.cpp" />
     <ClCompile Include="Game_CL0405.cpp" />
     <ClCompile Include="GameFIFA05.cpp" />
     <ClCompile Include="Game_FM07.cpp" />
     <ClCompile Include="Game_FM08.cpp" />
     <ClCompile Include="Game_TCM2004.cpp" />
-    <ClCompile Include="Game_TCM2005_11.cpp" />
+    <ClCompile Include="Game_TCM2005.cpp" />
     <ClCompile Include="Game_WC06.cpp" />
     <ClCompile Include="GfxCoreHook.cpp" />
     <ClCompile Include="Main.cpp" />

@@ -7,7 +7,7 @@ using namespace plugin;
 using namespace std;
 using namespace MyFilesystem;
 
-namespace fifa08_12 {
+namespace fifa08 {
     const unsigned int MAX_TEX_COLLECTIONS = 200; // default 200
     const unsigned int MAX_TEXTURES_IN_FSH = 1024; // default 64
     const unsigned int MAX_TEX_INFOS = 1280; // default 320
@@ -92,6 +92,7 @@ namespace fifa08_12 {
         char _pad11A[2];
     };
     VALIDATE_SIZE(SGR_Texture, 0x11C);
+    VALIDATE_OFFSET(SGR_Texture, bValid, 0x119);
 
     unsigned int sgrtex_cloneSize(SHAPE *shp) {
         unsigned char *currentSection = (unsigned char *)shp;
@@ -111,16 +112,16 @@ namespace fifa08_12 {
         unsigned int oldSize = sgrtex_cloneSize(tex->pShape);
         if (oldSize < newSize) {
             Call<0x5F2390>(tex); // deleteTexture() // done
-            Call<0x5DE5F0>(); // unbindTARs()
+            Call<0x5F21B0>(); // unbindTARs() // done
             tex->pShape = CallAndReturn<SHAPE *, 0x5F11E0>(srcShape); // cloneShape() // done
             tex->bValid = true;
-            *(unsigned int *)0xA71434 += 1; // gnNumTextures
+            *(unsigned int *)0xCFBDD4 += 1; // gnNumTextures // done
         }
         else {
-            Call<0x5DE5F0>(); // unbindTARs()
+            Call<0x5F21B0>(); // unbindTARs() // done
             Call<0x7CB476>(tex->pShape, srcShape, newSize); // MemCpy() // done
         }
-        Call<0x5DDA30>(); // rebindTARs()
+        Call<0x5F15F0>(); // rebindTARs() // done
     }
 
     void *OnNewModelUserData(bool isOrd, unsigned char zero, void *sceneEntry, void *block, unsigned int fileSize, const char *fileName) {
@@ -227,7 +228,7 @@ namespace fifa08_12 {
             if (useCustomHeadlods) {
                 PLAYER_HEADLOD1_ID[playerIndex] = 0;
                 PLAYER_HEADLOD2_ID[playerIndex] = 0;
-                int hairtypeid = *raw_ptr<unsigned int>(desc, 0x1028);
+                int hairtypeid = *raw_ptr<unsigned int>(desc, 0x1040); // done
                 if (GetFileSize(Format(HeadLodFormat1, playerid)) > 0)
                     PLAYER_HEADLOD1_ID[playerIndex] = playerid;
                 else if (hairtypeid >= 0)
@@ -278,12 +279,12 @@ namespace fifa08_12 {
 }
 
 void Install_FIFA08_12() {
-    using namespace fifa08_12;
+    using namespace fifa08;
     patch::SetUInt(0x5C5EEF + 1, settings().FAT_MAX_ENTRIES); // fat fix (50000 entries) // done
     patch::RedirectCall(0x5F2B1D, OnTextureCopyData); // done
     patch::SetUShort(0x5F2B18, 0xD68B); // mov edx, [esi] => mov edx, esi // done
-    patch::Nop(0x5DEF4F, 5); // unbindTars()
-    patch::Nop(0x5DEF65, 5); // rebindTars()
+    patch::Nop(0x5F2B0F, 5); // unbindTars() // done
+    patch::Nop(0x5F2B25, 5); // rebindTars() // done
     patch::RedirectCall(0x5F6964, OnNewModelUserData); // done
     useCustomHeadlods = true;
     if (useCustomHeadlods) {
@@ -395,9 +396,6 @@ void Install_FIFA08_12() {
     patch::Nop(0x60558E, 10); // done
     patch::SetUInt(0x6055C4 + 1, settings().TEXTURE_MEMORY_SIZE); // done
     patch::SetUInt(0x605598 + 1, settings().TEXTURE_MEMORY_SIZE); // done
-
-    // adboards 16
-    //patch::SetUInt(0x1433B6E + 4, 16); // done
 
     if (useCustomHeadlods) {
         strcpy(HeadLodFormat1, "m46__%d.o");

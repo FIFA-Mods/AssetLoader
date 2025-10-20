@@ -110,6 +110,7 @@ namespace fifa07 {
         char _pad11A[2];
     };
     VALIDATE_SIZE(SGR_Texture, 0x11C);
+    VALIDATE_OFFSET(SGR_Texture, bValid, 0x119);
 
     unsigned int sgrtex_cloneSize(SHAPE *shp) {
         unsigned char *currentSection = (unsigned char *)shp;
@@ -125,80 +126,20 @@ namespace fifa07 {
         return currentSection - (unsigned char *)shp + CallAndReturn<unsigned int, 0x7A946F>(currentSection); // SHAPE_size()
     }
 
-    int OnSHAPE_createsize(int width, int height, int bpp, int clutBpp, int mipmaps, int commentSize, int metalBinSize) {
-        int size = CallAndReturn<int, 0x7A6600>(width, height, bpp, clutBpp, mipmaps, commentSize, metalBinSize);
-        cSGR_Memory *pool = *(cSGR_Memory **)0xA71438;
-        Log(Format("SHAPE_createsize %dx%d %d-bit (%d) %d mipmaps (%d,%d) total %d, pool: start %X end %X free %X used %d size %d, totaltex: %u\n",
-            width, height, bpp, clutBpp, mipmaps, commentSize, metalBinSize, size,
-            pool->m_pStart, pool->m_pEnd, pool->m_pFree, pool->m_nBytesAllocated, pool->m_pEnd - pool->m_pStart,
-            *(unsigned int *)0xA71434));
-        return size;
-    }
-
-    void OnDeleteTexture(SGR_Texture *tex) {
-        SHAPE shp = {};
-        bool hasShape = tex->pShape;
-        unsigned int shapeSize = 0;
-        if (hasShape) {
-            memcpy(&shp, tex->pShape, sizeof(SHAPE));
-            shapeSize = sgrtex_cloneSize(tex->pShape);
-        }
-        Call<0x5DE7D0>(tex);
-        cSGR_Memory *pool = *(cSGR_Memory **)0xA71438;
-        if (!hasShape) {
-            Log(Format("deleteTexture (empty), pool: start %X end %X free %X used %d size %d, totaltex: %u\n",
-                pool->m_pStart, pool->m_pEnd, pool->m_pFree, pool->m_nBytesAllocated, pool->m_pEnd - pool->m_pStart,
-                *(unsigned int *)0xA71434));
-        }
-        else {
-            char texName[5];
-            memcpy(texName, &tex->nMaterialID, 4);
-            texName[4] = '\0';
-            Log(Format("deleteTexture '%s' (%s) %dx%d (%X) %d mipmaps total %d, pool: start %X end %X free %X used %d size %d, totaltex: %u\n",
-                texName, tex->pName ? tex->pName : "",
-                shp.width, shp.height, shp.type, shp.mipmaps, shapeSize,
-                pool->m_pStart, pool->m_pEnd, pool->m_pFree, pool->m_nBytesAllocated, pool->m_pEnd - pool->m_pStart,
-                *(unsigned int *)0xA71434));
-        }
-    }
-
-    SHAPE *OnCloneShape(SHAPE *pShape) {
-        SHAPE *result = CallAndReturn<SHAPE *, 0x5DD620>(pShape);
-        cSGR_Memory *pool = *(cSGR_Memory **)0xA71438;
-        Log(Format("cloneShape %dx%d (%X) %d mipmaps total %d, pool: start %X end %X free %X used %d size %d, totaltex: %u\n",
-            pShape->width, pShape->height, pShape->type, pShape->mipmaps, sgrtex_cloneSize(pShape),
-            pool->m_pStart, pool->m_pEnd, pool->m_pFree, pool->m_nBytesAllocated, pool->m_pEnd - pool->m_pStart,
-            *(unsigned int *)0xA71434));
-        return result;
-    }
-
     void OnTextureCopyData(SGR_Texture *tex, SHAPE *srcShape, unsigned int newSize) {
-        //SHAPE shp = {};
-        //memcpy(&shp, tex->pShape, sizeof(SHAPE));
-        //cSGR_Memory *pool = *(cSGR_Memory **)0xA71438;
         unsigned int oldSize = sgrtex_cloneSize(tex->pShape);
-        //Log(Format("TextureCopyData before %dx%d (%X) %d mipmaps total %d/%d, pool: start %X end %X free %X used %d size %d, totaltex: %u\n",
-        //    shp.width, shp.height, shp.type, shp.mipmaps, oldSize, newSize,
-        //    pool->m_pStart, pool->m_pEnd, pool->m_pFree, pool->m_nBytesAllocated, pool->m_pEnd - pool->m_pStart,
-        //    *(unsigned int *)0xA71434));
         if (oldSize < newSize) {
             Call<0x5DE7D0>(tex); // deleteTexture()
             Call<0x5DE5F0>(); // unbindTARs()
             tex->pShape = CallAndReturn<SHAPE *, 0x5DD620>(srcShape); // cloneShape()
             tex->bValid = true;
             *(unsigned int *)0xA71434 += 1; // gnNumTextures
-            //memcpy(&shp, tex->pShape, sizeof(SHAPE));
         }
         else {
             Call<0x5DE5F0>(); // unbindTARs()
             Call<0x79C672>(tex->pShape, srcShape, newSize); // MemCpy()
-            //memcpy(&shp, tex->pShape, sizeof(SHAPE));
         }
         Call<0x5DDA30>(); // rebindTARs()
-        //Log(Format("TextureCopyData after %dx%d (%X) %d mipmaps total %d/%d, pool: start %X end %X free %X used %d size %d, totaltex: %u\n",
-        //    shp.width, shp.height, shp.type, shp.mipmaps, oldSize, newSize,
-        //    pool->m_pStart, pool->m_pEnd, pool->m_pFree, pool->m_nBytesAllocated, pool->m_pEnd - pool->m_pStart,
-        //    *(unsigned int *)0xA71434));
     }
 
     void *OnNewModelUserData(bool isOrd, unsigned char zero, void *sceneEntry, void *block, unsigned int fileSize, const char *fileName) {
@@ -314,7 +255,6 @@ namespace fifa07 {
                     PLAYER_HEADLOD2_ID[playerIndex] = playerid;
                 else if (hairtypeid >= 0)
                     PLAYER_HEADLOD2_ID[playerIndex] = -hairtypeid;
-                //Log(Format("Player %s id %d hair %d headlod %d\n", raw_ptr<char>(desc, 0xFB0), playerid, hairtypeid, PLAYER_HEADLOD1_ID[playerIndex]));
             }
         }
     }
@@ -453,11 +393,6 @@ void Install_FIFA07() {
     patch::Nop(0x5F114E, 10);
     patch::SetUInt(0x5F1184 + 1, settings().TEXTURE_MEMORY_SIZE);
     patch::SetUInt(0x5F1158 + 1, settings().TEXTURE_MEMORY_SIZE);
-
-    //patch::RedirectCall(0x5DD500, OnSHAPE_createsize);
-    //patch::RedirectCall(0x5DEEEA, OnDeleteTexture);
-    //patch::RedirectCall(0x5DEF82, OnCloneShape);
-    //patch::RedirectCall(0x5DF030, OnCloneShape);
 
     if (useCustomHeadlods) {
         strcpy(HeadLodFormat1, "m46__%d.o");
